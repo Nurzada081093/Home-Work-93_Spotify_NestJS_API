@@ -22,7 +22,7 @@ export class ArtistsController {
     private artistModel: Model<ArtistDocument>,
   ) {}
   @Get()
-  getAll() {
+  get() {
     return this.artistModel.find();
   }
   @Get(':id')
@@ -35,11 +35,11 @@ export class ArtistsController {
   )
   async create(
     @UploadedFile() file: Express.Multer.File,
-    @Body() artistDto: CreateArtistDto,
+    @Body() artistDTO: CreateArtistDto,
   ) {
     const newArtist = new this.artistModel({
-      name: artistDto.name,
-      description: artistDto.description,
+      name: artistDTO.name,
+      description: artistDTO.description,
       image: file && file.filename ? '/images/artists/' + file.filename : null,
     });
     return await newArtist.save();
@@ -48,8 +48,8 @@ export class ArtistsController {
   async delete(@Param('id') id: string) {
     const artist = await this.artistModel.findByIdAndDelete(id);
     if (!artist) {
-      throw new NotFoundException('Artist not found');
+      throw new NotFoundException('Artist not found!');
     }
-    return { message: 'Artist has been deleted successfully' };
+    return { message: 'Artist has been deleted successfully!' };
   }
 }
