@@ -16,6 +16,7 @@ import { Model } from 'mongoose';
 import { Artist, ArtistDocument } from '../schemas/artist.schema';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateAlbumDto } from './create-album.dto';
+import { diskStorage } from 'multer';
 
 @Controller('albums')
 export class AlbumsController {
@@ -40,7 +41,18 @@ export class AlbumsController {
     return this.albumModel.findById({ _id: id });
   }
   @Post()
-  @UseInterceptors(FileInterceptor('image', { dest: './public/images/albums' }))
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './public/images/albums',
+        filename: (_req, file, callback) => {
+          const imageFormat = file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/);
+          const format = imageFormat ? imageFormat[1] : 'jpg';
+          callback(null, `${crypto.randomUUID()}.${format}`);
+        },
+      }),
+    }),
+  )
   async create(
     @UploadedFile() file: Express.Multer.File,
     @Body() albumDTO: CreateAlbumDto,
