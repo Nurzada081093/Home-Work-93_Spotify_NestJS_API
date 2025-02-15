@@ -12,6 +12,11 @@ export interface UserDocument extends Document {
   checkPassword: (password: string) => Promise<boolean>;
 }
 
+export enum UserRoles {
+  admin = 'admin',
+  user = 'user',
+}
+
 const HASHING_PASSWORD = 10;
 
 @Schema()
@@ -24,6 +29,8 @@ export class User {
   token: string;
   @Prop()
   displayName: string;
+  @Prop({ required: true, enum: UserRoles, default: UserRoles.user })
+  role: UserRoles;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -11,10 +11,11 @@ import { Track, TrackSchema } from './schemas/track.schema';
 import { UsersController } from './users/users.controller';
 import { User, UserSchema } from './schemas/user.schema';
 import { AuthService } from './auth/auth.service';
+import { LocalStrategy } from './local.strategy';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/spotify'),
+    MongooseModule.forRoot('mongodb://localhost/spotify_nestJS'),
     MongooseModule.forFeature([
       { name: Artist.name, schema: ArtistSchema },
       { name: Album.name, schema: AlbumSchema },
@@ -29,6 +30,6 @@ import { AuthService } from './auth/auth.service';
     TracksController,
     UsersController,
   ],
-  providers: [AppService, AuthService],
+  providers: [AppService, AuthService, LocalStrategy],
 })
 export class AppModule {}
