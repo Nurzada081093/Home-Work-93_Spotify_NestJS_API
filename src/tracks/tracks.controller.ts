@@ -15,6 +15,8 @@ import { Model } from 'mongoose';
 import { Album, AlbumDocument } from '../schemas/album.schema';
 import { CreateTrackDto } from './create-track.dto';
 import { TokenAuthGuard } from '../token-auth/token-auth.guard';
+import { UserRoleGuard } from '../user-role/user-role.guard';
+import { UserRoles } from '../schemas/user.schema';
 
 @Controller('tracks')
 export class TracksController {
@@ -48,6 +50,7 @@ export class TracksController {
     });
     return await newTrack.save();
   }
+  @UseGuards(TokenAuthGuard, new UserRoleGuard([`${UserRoles.admin}`]))
   @Delete(':id')
   async delete(@Param('id') id: string) {
     const track = await this.trackModel.findByIdAndDelete(id);

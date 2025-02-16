@@ -19,6 +19,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateAlbumDto } from './create-album.dto';
 import { diskStorage } from 'multer';
 import { TokenAuthGuard } from '../token-auth/token-auth.guard';
+import { UserRoleGuard } from '../user-role/user-role.guard';
+import { UserRoles } from '../schemas/user.schema';
 
 @Controller('albums')
 export class AlbumsController {
@@ -72,6 +74,7 @@ export class AlbumsController {
     });
     return await newAlbum.save();
   }
+  @UseGuards(TokenAuthGuard, new UserRoleGuard([`${UserRoles.admin}`]))
   @Delete(':id')
   async delete(@Param('id') id: string) {
     const album = await this.albumModel.findByIdAndDelete(id);
